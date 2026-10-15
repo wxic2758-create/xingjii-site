@@ -1,0 +1,6 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64" role="img" aria-labelledby="title">
+  <title id="title">Mac Tools</title>
+  <rect width="64" height="64" rx="15" fill="#152033"/>
+  <path d="M13 45V19h6l13 15 13-15h6v26h-7V29L32 43 20 29v16z" fill="#fff"/>
+  <circle cx="51" cy="13" r="5" fill="#79a9ff"/>
+</svg>
