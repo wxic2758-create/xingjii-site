@@ -28,7 +28,7 @@ def page(lang,path,title,desc,body,head='',faq=None,noindex=False):
   nav_l=[P(lang,'#apps') if path=='' else P(lang,'')+'#apps',P(lang,'')+'#guides',P(lang,'support/'),P(lang,'privacy/')]
   nav=''.join(f'<li><a href="{h}">{n}</a></li>' for n,h in zip(t['nav'],nav_l))
   sw=f'<div class="lang" role="group" aria-label="{t["lang_label"]}"><a href="{en}" hreflang="en" lang="en"{" aria-current=page" if lang=="en" else ""}>EN</a><a href="{zh}" hreflang="zh-Hans" lang="zh-Hans"{" aria-current=page" if lang=="zh" else ""}>中文</a></div>'
-  fa=''.join(f'<li><a href="{P(lang,"apps/"+s+"/")}">{APPS[s]["short"]}</a></li>' for s in ORDER)+f'<li><span>{t["soon_name"]} · {t["soon"]}</span></li>'
+  fa=''.join(f'<li><a href="{P(lang,"apps/"+s+"/")}">{APPS[s]["short"]}</a></li>' for s in ORDER)
   alt='' if noindex else f'<link rel="canonical" href="{BASE}{me}"><link rel="alternate" hreflang="en" href="{BASE}{en}"><link rel="alternate" hreflang="zh-Hans" href="{BASE}{zh}"><link rel="alternate" hreflang="x-default" href="{BASE}{en}">'
   h=f'''<!doctype html>
 <html lang="{'zh-Hans' if lang=='zh' else 'en'}"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
@@ -37,10 +37,10 @@ def page(lang,path,title,desc,body,head='',faq=None,noindex=False):
 {alt}<meta property="og:type" content="website"><meta property="og:title" content="{esc(title)}"><meta property="og:description" content="{esc(desc)}"><meta property="og:url" content="{BASE}{me}">
 <link rel="icon" type="image/svg+xml" href="/favicon.svg"><link rel="stylesheet" href="/assets/style.css"><script src="/assets/site.js" defer></script>{head}{faq.ld() if faq else ''}</head><body>
 <div class="langbar" role="status">{t['langbar']} <a href="{other}">{t['langbar_go']}</a> · <button type="button" style="background:none;border:0;color:var(--text-2);cursor:pointer;font:inherit">{t['close']}</button></div>
-<header class="nav"><div class="wrap"><a class="brand" href="{P(lang,'')}"><span class="brand-mark"></span>{t['studio']}</a>
+<header class="nav"><div class="wrap"><a class="brand" href="{P(lang,'')}">{t['studio']}</a>
 <button class="menu-btn" type="button" aria-label="Menu" aria-expanded="false" aria-controls="nl">☰</button><ul class="nav-links" id="nl">{nav}</ul>{sw}</div></header>
 <main>{body}</main>
-<footer><div class="wrap"><div class="foot"><div><a class="brand" href="{P(lang,'')}"><span class="brand-mark"></span>{t['studio']}</a><p style="margin-top:12px;max-width:320px">{t['tagline']}</p></div>
+<footer><div class="wrap"><div class="foot"><div><a class="brand" href="{P(lang,'')}">{t['studio']}</a><p style="margin-top:12px;max-width:320px">{t['tagline']}</p></div>
 <div><h4>{t['foot_apps']}</h4><ul>{fa}</ul></div><div><h4>{t['foot_res']}</h4><ul><li><a href="{P(lang,'')}#guides">{t['nav'][1]}</a></li><li><a href="{P(lang,'support/')}">{t['nav'][2]}</a></li><li><a href="{P(lang,'privacy/')}">{t['nav'][3]}</a></li></ul></div>
 <div><h4>{t['contact']}</h4><ul><li><a href="mailto:{EMAIL}">{EMAIL}</a></li></ul></div></div>
 <div class="foot-bottom"><span>© 2026 {t['studio']}. {t['rights']}</span>{sw}</div></div></footer></body></html>
@@ -56,14 +56,13 @@ for L in ('en','zh'):
   for s in ORDER:
     a=A[s][L]; n=APPS[s]['name'][L]
     cards+=f'<article class="card"><div class="card-head">{icon(s,64,alt=n+" icon")}<div><h3>{n}</h3><p class="muted" style="font-size:15px">{a["card"]}</p></div></div><ul>{"".join(f"<li>{p}</li>" for p in a["pts"])}</ul><div class="card-foot">{badge(L,APPS[s]["id"])}<a href="{P(L,"apps/"+s+"/")}">{t["more"]}</a></div></article>'
-  cards+=f'<article class="card soon" aria-label="{t["soon"]}"><div class="card-head"><div class="icon icon-ph" style="width:64px;height:64px">?</div><div><h3>{t["soon_name"]}</h3><p class="muted" style="font-size:15px">{t["soon_desc"]}</p></div></div><div class="card-foot"><span class="badge-soon">{t["soon"]}</span><span class="tag">{t["soon_note"]}</span></div></article>'
   TASK={'en':{'compressbox':('🗜️','Compress images','Shrink a folder of photos or screenshots before sharing or uploading.'),'imagerenamer':('🏷️','Batch rename images','Give hundreds of files clean, ordered names without touching originals.'),'cloudbridge':('🖥️','Get files from a server','Preview and download files from your VPS, NAS or SFTP server.')},
         'zh':{'compressbox':('🗜️','压缩图片','分享或上传前，把一整个文件夹的照片、截图变小。'),'imagerenamer':('🏷️','批量重命名图片','给几百个文件起整齐有序的名字，原文件不动。'),'cloudbridge':('🖥️','从服务器取文件','预览并下载 VPS、NAS 或 SFTP 服务器上的文件。')}}[L]
   TO=['compressbox','imagerenamer','cloudbridge']
   tasks=''.join(f'<div class="task"><div class="emoji" aria-hidden="true">{TASK[s][0]}</div><h3>{TASK[s][1]}</h3><p>{TASK[s][2]}</p><div class="links"><a href="{P(L,"apps/"+s+"/")}">{t["open_app"].format(APPS[s]["short"])}</a><a href="{P(L,"guides/"+APPS[s]["guide"]+"/")}">{t["read_guide"].format(G[APPS[s]["guide"]][L]["t"])}</a></div></div>' for s in TO)
   guides=''.join(f'<a class="guide" href="{P(L,"guides/"+APPS[s]["guide"]+"/")}"><span class="tag">{APPS[s]["short"]}</span><h3>{G[APPS[s]["guide"]][L]["t"]}</h3><span class="more">{t["read"]}</span></a>' for s in TO)
   prom=''.join(f'<div><div class="ico" aria-hidden="true">{e}</div><h3>{h}</h3><p>{p}</p></div>' for e,h,p in t['promise'])
-  body=f'''<section class="hero"><div class="wrap"><div class="hero-icons">{''.join(icon(s,72,cls='icon') for s in ORDER)}<div class="icon-ph" aria-hidden="true">?</div></div>
+  body=f'''<section class="hero"><div class="wrap"><div class="hero-icons">{''.join(icon(s,72,cls='icon') for s in ORDER)}</div>
 <div class="pill">{t['localpill']}</div><h1>{t['tagline']}</h1><p class="lead">{t['lead']}</p><a class="btn" href="#apps">{t['browse']}</a></div></section>
 <section id="apps" class="alt"><div class="wrap"><div class="center" style="margin-bottom:48px"><h2>{t['apps_h']}</h2><p class="lead">{t['apps_lead']}</p></div><div class="grid">{cards}</div></div></section>
 <section id="tasks"><div class="wrap center"><h2>{t['task_h']}</h2><p class="lead">{t['task_lead']}</p></div><div class="wrap"><div class="tasks">{tasks}</div></div></section>
@@ -78,7 +77,7 @@ for L in ('en','zh'):
     body=f'''<section class="app-hero"><div class="wrap">{icon(s,160,alt=n+" icon")}<div>
 <p class="crumbs"><a href="{P(L,'')}#apps">{t['nav'][0]}</a> › {ap['short']}</p><h1>{n}</h1><p class="lead" style="margin-top:8px">{a['sub']}</p>
 <div class="app-cta">{badge(L,ap['id'])}<span class="pill" style="margin:0">🔒 {a['pill']}</span></div>
-<div class="meta"><span>🖥 {ap['os'][L]}</span><span>⚙️ <span class="ph">{t['chip']}</span></span><span>💲 {t['price']}</span><span>📦 {ap['size']}</span></div>
+<div class="meta"><span>🖥 {ap['os'][L]}</span>{f"<span>⚙️ {t['chip']}</span>" if ap.get('chip') else ''}<span>💲 {t['price']}</span><span>📦 {ap['size']}</span></div>
 <p class="subnav"><a href="{P(L,'apps/'+s+'/support/')}">{t['support']}</a><a href="{P(L,'apps/'+s+'/privacy/')}">{t['privacy']}</a></p></div></div></section>
 <div class="shots" tabindex="0" role="region" aria-label="Screenshots">{shots}</div>
 <section><div class="wrap"><p class="lead" style="max-width:760px">{a['lead']}</p><h2 style="margin-top:64px">{t['feat_h']}</h2><div class="features">{fe}</div></div></section>
